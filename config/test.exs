@@ -23,5 +23,10 @@ config :probuild_ex, ProbuildExWeb.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
+# Disable canon during tests
+config :probuild_ex, :canon,
+  games: [platform_ids: []],
+  pros: [platform_ids: []]
+
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
