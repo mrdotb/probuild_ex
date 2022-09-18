@@ -4,6 +4,7 @@ defmodule ProbuildEx.GamesTest do
 
   import ProbuildEx.GamesFixtures
 
+  alias ProbuildEx.GameDataFixtures
   alias ProbuildEx.Games
 
   describe "team" do
@@ -54,6 +55,14 @@ defmodule ProbuildEx.GamesTest do
 
       assert {:error, :not_found} = Games.fetch_summoner(puuid: "1234")
     end
+
+    test "list_pro_summoners/1 should filter properly per region and pro" do
+      summoner_fixture(%{"platform_id" => "kr"})
+      summoner_fixture(%{"platform_id" => "euw1"})
+      summoner_fixture(%{"pro_id" => nil, "platform_id" => "kr"})
+
+      assert [_pro_kr_summoner] = Games.list_pro_summoners("kr")
+    end
   end
 
   describe "pro transaction" do
@@ -82,6 +91,57 @@ defmodule ProbuildEx.GamesTest do
       assert result.team.name == @chovy_ugg["current_team"]
       assert result.pro.name == @chovy_ugg["official_name"]
       assert result.summoner.name == @chovy_summoner_riot["name"]
+    end
+  end
+
+  describe "game" do
+    test "Games.Game.changeset/2 should clean version" do
+      attrs = unique_game_attrs(%{"version" => "12.1.416.4011"})
+
+      assert {:ok, game} =
+               %Games.Game{}
+               |> Games.Game.changeset(attrs)
+               |> apply_action(:insert)
+
+      assert game.version == "12.1.1"
+    end
+
+    test "Games.Game.changeset/2 should cast creation_int unix timestamp to utc_datetime creation" do
+      attrs = unique_game_attrs(%{"creation_int" => 1_663_531_903_769})
+
+      assert {:ok, game} =
+               %Games.Game{}
+               |> Games.Game.changeset(attrs)
+               |> apply_action(:insert)
+
+      assert game.creation == ~U[2022-09-18 20:11:43Z]
+    end
+
+    test "create_game_complete/3 should create a game, 10 summoners and 10 participants" do
+      data = GameDataFixtures.get()
+
+      assert {:ok, multi} =
+               Games.create_game_complete(
+                 data.platform_id,
+                 data.game_data,
+                 data.summoners_list
+               )
+
+      assert %Games.Game{} = multi[:game]
+
+      created_summoners =
+        for {{:summoner, _puuid}, summoner} <- multi do
+          assert %Games.Summoner{} = summoner
+        end
+
+      assert Enum.count(created_summoners) == 10
+
+      created_participants =
+        for {{:participant, _team_role}, participant} <- multi do
+          assert %Games.Participant{} = participant
+        end
+
+      assert Enum.count(created_participants) == 10
     end
   end
 end

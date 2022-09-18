@@ -61,4 +61,31 @@ defmodule ProbuildEx.GamesFixtures do
     {:ok, summoner} = ProbuildEx.Games.create_summoner(attrs)
     summoner
   end
+
+  @doc """
+  Generate a unique attrs for game.
+  """
+  def unique_game_attrs(attrs \\ %{}) do
+    Enum.into(
+      attrs,
+      %{
+        "creation_int" => DateTime.now!("Etc/UTC") |> DateTime.to_unix(:millisecond),
+        "duration" => 1600,
+        "platform_id" => "euw1",
+        "riot_id" => "EUW1_#{System.unique_integer([:positive])}",
+        "version" => "12.1.1",
+        "winner" => 100
+      }
+    )
+  end
+
+  @doc """
+  Generate a game.
+  """
+  def game_fixture(attrs \\ %{}) do
+    attrs = unique_game_attrs(attrs)
+
+    {:ok, game} = ProbuildEx.Repo.insert(attrs)
+    game
+  end
 end
