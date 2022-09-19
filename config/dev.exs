@@ -26,7 +26,9 @@ config :probuild_ex, ProbuildExWeb.Endpoint,
   secret_key_base: "NG5Jey+3p7RqNSKiO3Q16MoLHy5Vwuhf2SL/9zQGqTDAkyXnaFqntVbB/i16i/sr",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
-    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    # Add tailwind watcher
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 
 # ## SSL Support
