@@ -17,7 +17,7 @@ defmodule ProbuildExWeb.Router do
   scope "/", ProbuildExWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", GameLive.Index, :index
   end
 
   # Other scopes may use custom stacks.

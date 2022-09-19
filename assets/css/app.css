@@ -3,6 +3,55 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* Custom grid for participants */
+
+.grid-participants-header {
+  display: none;
+}
+@media (min-width: theme('screens.md')) {
+  .grid-participants-header {
+    display: grid;
+    grid-template-columns: 11% 17% 12% 10% 10% 35% 4%;
+  }
+}
+.grid-participants {
+  display: grid;
+  grid-gap: 12px 0px;
+  grid-template-rows: auto auto;
+  grid-template-columns: 20% 20% 60%;
+  grid-template-areas:
+  "player kda versus"
+  "creation summoners build";
+}
+@media (min-width: theme('screens.md')) {
+  .grid-participants {
+    grid-gap: 0px;
+    grid-template-columns: 11% 17% 12% 10% 10% 35% 4%;
+    grid-template-areas: "creation player versus kda summoners build ellipsis";
+  }
+}
+.grid-area-creation {
+  grid-area: creation;
+}
+.grid-area-player {
+  grid-area: player;
+}
+.grid-area-versus {
+  grid-area: versus;
+}
+.grid-area-kda {
+  grid-area: kda;
+}
+.grid-area-summoners {
+  grid-area: summoners;
+}
+.grid-area-build {
+  grid-area: build;
+}
+.grid-area-ellipsis {
+  grid-area: ellipsis;
+}
+
 /* Alerts and form errors used by phx.new */
 .alert {
   padding: 15px;
