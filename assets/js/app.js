@@ -36,6 +36,21 @@ window.addEventListener("phx:page-loading-stop", info => topbar.hide())
 // connect if there are any LiveViews on the page
 liveSocket.connect()
 
+// tailwind ui mobile nav
+const $toggleMenu = document.getElementById("toggle-menu")
+const $burger = document.getElementById("burger")
+const $xMark = document.getElementById("x-mark")
+const $mobileMenu = document.getElementById("mobile-menu")
+
+$toggleMenu.addEventListener("click", event => {
+  event.preventDefault();
+  ["hidden", "block"].forEach(className => {
+    $burger.classList.toggle(className)
+    $xMark.classList.toggle(className)
+  })
+  $mobileMenu.classList.toggle("hidden")
+})
+
 // expose liveSocket on window for web console debug logs and latency simulation:
 // >> liveSocket.enableDebug()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
