@@ -42,7 +42,7 @@
     <%= for participant <- @participants do %>
       <div id={"participant-#{participant.id}"} class={[if(participant.win, do: "border-blue-500", else: "border-red-500"), "hover:bg-gray-100 hover:cursor-pointer border-l-8 w-full max-w-3xl grid-participants px-1 py-2 bg-white rounded-lg overflow-hidden shadow"]}>
         <div class="grid-area-creation flex md:justify-center items-center">
-          <%# TODO time ago %>
+          <time id={"time-ago-#{participant.id}"} phx-hook="TimeAgo" datetime={participant.game.creation}></time>
         </div>
 
         <div class="grid-area-player flex items-center">
