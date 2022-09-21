@@ -6,6 +6,7 @@ defmodule ProbuildEx.App do
   import Ecto.Query
 
   alias ProbuildEx.Repo
+  alias ProbuildEx.Ddragon
 
   alias ProbuildEx.Games.Participant
 
@@ -89,10 +90,19 @@ defmodule ProbuildEx.App do
   end
 
   defp reduce_pro_participant_opts({:search, search}, query) do
+    champions_ids =
+      Enum.reduce(Ddragon.get_champions_search_map(), [], fn {champion_name, champion_id}, acc ->
+        if String.starts_with?(champion_name, search) do
+          [champion_id | acc]
+        else
+          acc
+        end
+      end)
+
     search_str = search <> "%"
 
     from [participant, pro: pro] in query,
-      where: ilike(pro.name, ^search_str)
+      where: ilike(pro.name, ^search_str) or participant.champion_id in ^champions_ids
   end
 
   defp reduce_pro_participant_opts({key, value}, _query),

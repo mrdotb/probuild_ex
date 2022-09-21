@@ -2,8 +2,6 @@ defmodule ProbuildEx.AppTest do
   use ExUnit.Case, async: true
   use ProbuildEx.DataCase
 
-  import ProbuildEx.GamesFixtures
-
   alias ProbuildEx.{App, Games}
   alias ProbuildEx.GameDataFixtures
 
@@ -50,10 +48,11 @@ defmodule ProbuildEx.AppTest do
     end
 
     test "list_pro_participant_summoner/1 should return participant matching the query" do
-      # This game off weiwei is on :kr and his position is :TOP
+      # This game off weiwei is on :kr and his position is :TOP and play yone
       create_weiwei_game()
 
       [_] = App.list_pro_participant_summoner(%{search: "weiwei"})
+      [_] = App.list_pro_participant_summoner(%{search: "yone"})
       [_] = App.list_pro_participant_summoner(%{platform_id: :kr})
       [_] = App.list_pro_participant_summoner(%{team_position: :TOP})
 

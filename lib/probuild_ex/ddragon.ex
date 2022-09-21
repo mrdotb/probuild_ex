@@ -50,4 +50,27 @@ defmodule ProbuildEx.Ddragon do
   def get_item_image(game_version, item_key) do
     "#{@ddragon_cdn}/#{game_version}/img/item/#{item_key}.png"
   end
+
+  @doc """
+  Get a champion search map
+
+  ## Example
+
+    iex> Ddragon.get_champions_search_map()
+    %{
+      "lux" => 99,
+      "evelynn" => 28,
+      "heimerdinger" => 74,
+      ...
+    }
+  """
+  def get_champions_search_map do
+    case Cache.fetch_champions_search_map() do
+      {:ok, search_map} ->
+        search_map
+
+      {:error, _} ->
+        %{}
+    end
+  end
 end
