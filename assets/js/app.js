@@ -27,6 +27,7 @@ import topbar from "../vendor/topbar"
 import {render, cancel} from "../vendor/timeago.js"
 
 let Hooks = {}
+
 Hooks.TimeAgo = {
   mounted() {
     render(this.el, 'en_short')
@@ -38,6 +39,40 @@ Hooks.TimeAgo = {
     cancel(this.el)
   }
 }
+
+// https://elixirforum.com/t/how-can-i-implement-an-infinite-scroll-in-liveview/30457
+// https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver
+Hooks.InfiniteScroll = {
+  page() {
+    return parseInt(this.el.dataset.page, 10);
+  },
+  loadMore(entries) {
+    const target = entries[0];
+    if (this.pending && target.isIntersecting && this.pending == this.page()) {
+      this.pending = this.page() + 1;
+      this.pushEvent("load-more", {});
+    }
+  },
+  mounted() {
+    this.pending = this.page();
+    const options = {
+      root: null,
+      rootMargin: "-90% 0px 10% 0px",
+      threshold: 1.0
+    };
+    this.observer = new IntersectionObserver(this.loadMore.bind(this), options)
+    this.observer.observe(this.el);
+  },
+  reconnected() {
+    this.pending = this.page()
+  },
+  updated() {
+    this.pending = this.page();
+  },
+  beforeDestroy() {
+    this.observer.unobserve(this.el);
+  },
+};
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {hooks: Hooks, params: {_csrf_token: csrfToken}})

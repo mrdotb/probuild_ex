@@ -57,14 +57,16 @@ defmodule ProbuildEx.App do
         opponent_participant: opponent_participant,
         summoner: {summoner, pro: pro}
       ],
-      order_by: [desc: game.creation],
-      limit: 20
+      order_by: [desc: game.creation]
   end
 
-  def list_pro_participant_summoner(search_opts) do
+  @doc """
+  Query pro participant paginated based on search_opts.
+  """
+  def paginate_pro_participants(search_opts, page_number \\ 1) do
     query = Enum.reduce(search_opts, pro_participant_base_query(), &reduce_pro_participant_opts/2)
 
-    Repo.all(query)
+    Repo.paginate(query, page: page_number)
   end
 
   defp reduce_pro_participant_opts({:platform_id, nil}, query) do

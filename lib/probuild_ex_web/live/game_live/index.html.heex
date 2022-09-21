@@ -53,68 +53,73 @@
           <div class="flex justify-center">Summoners</div>
           <div class="flex justify-center">Build</div>
         </div>
-        <%= for participant <- @participants do %>
-          <div id={"participant-#{participant.id}"} class={[if(participant.win, do: "border-blue-500", else: "border-red-500"), "hover:bg-gray-100 hover:cursor-pointer border-l-8 w-full max-w-3xl grid-participants px-1 py-2 bg-white rounded-lg overflow-hidden shadow"]}>
-            <div class="grid-area-creation flex md:justify-center items-center">
-              <time id={"time-ago-#{participant.id}"} phx-hook="TimeAgo" datetime={participant.game.creation}></time>
-            </div>
+        <div id="participants" phx-update={@update} class="w-full max-w-3xl flex-1 flex flex-col items-center space-y-1">
+          <%= for participant <- @participants do %>
+            <div id={"participant-#{participant.id}"} class={[if(participant.win, do: "border-blue-500", else: "border-red-500"), "hover:bg-gray-100 hover:cursor-pointer border-l-8 w-full max-w-3xl grid-participants px-1 py-2 bg-white rounded-lg overflow-hidden shadow"]}>
+              <div class="grid-area-creation flex md:justify-center items-center">
+                <time id={"time-ago-#{participant.id}"} phx-hook="TimeAgo" datetime={participant.game.creation}></time>
+              </div>
 
-            <div class="grid-area-player flex items-center">
-              <!-- Heroicon name: user-circle -->
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
-                <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" />
-              </svg>
-              <span class="flex-1 ml-1 text-ellipsis overflow-hidden">
-                <%= participant.summoner.pro.name %>
-              </span>
-            </div>
+              <div class="grid-area-player flex items-center">
+                <!-- Heroicon name: user-circle -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
+                  <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" />
+                </svg>
+                <span class="flex-1 ml-1 text-ellipsis overflow-hidden">
+                  <%= participant.summoner.pro.name %>
+                </span>
+              </div>
 
-            <div class="grid-area-versus flex justify-center items-center space-x-1">
-              <%= img_tag(Ddragon.get_champion_image(participant.game.version, participant.champion_id), class: "w-8 h-8 rounded-full") %>
-              <span>vs</span>
-              <%= img_tag(Ddragon.get_champion_image(participant.game.version, participant.opponent_participant.champion_id), class: "w-8 h-8 rounded-full") %>
-            </div>
+              <div class="grid-area-versus flex justify-center items-center space-x-1">
+                <%= img_tag(Ddragon.get_champion_image(participant.game.version, participant.champion_id), class: "w-8 h-8 rounded-full") %>
+                <span>vs</span>
+                <%= img_tag(Ddragon.get_champion_image(participant.game.version, participant.opponent_participant.champion_id), class: "w-8 h-8 rounded-full") %>
+              </div>
 
-            <div class="grid-area-kda flex justify-center items-center">
-              <span class="font-medium">
-                <%= participant.kills %>
-              </span>
-              /
-              <span class="font-medium text-red-500">
-                <%= participant.deaths %>
-              </span>
-              /
-              <span class="font-medium">
-               <%= participant.assists %>
-              </span>
-            </div>
+              <div class="grid-area-kda flex justify-center items-center">
+                <span class="font-medium">
+                  <%= participant.kills %>
+                </span>
+                /
+                <span class="font-medium text-red-500">
+                  <%= participant.deaths %>
+                </span>
+                /
+                <span class="font-medium">
+                 <%= participant.assists %>
+                </span>
+              </div>
 
-            <div class="grid-area-summoners flex justify-center items-center space-x-1">
-              <%= for summoner_key <- participant.summoners do %>
-                <%= img_tag(Ddragon.get_summoner_image(participant.game.version, summoner_key), class: "w-8 h-8 border border-gray-400") %>
-              <% end %>
-            </div>
-
-            <div class="grid-area-build flex justify-center items-center space-x-1">
-              <%= for item_key <- participant.items do %>
-                <%= if src = Ddragon.get_item_image(participant.game.version, item_key) do %>
-                  <img src={src} class="w-8 h-8" />
-                <% else %>
-                  <div class="bg-gray-900 w-8 h-8 border border-gray-400"></div>
+              <div class="grid-area-summoners flex justify-center items-center space-x-1">
+                <%= for summoner_key <- participant.summoners do %>
+                  <%= img_tag(Ddragon.get_summoner_image(participant.game.version, summoner_key), class: "w-8 h-8 border border-gray-400") %>
                 <% end %>
-              <% end %>
-            </div>
+              </div>
 
-            <div class="grid-area-ellipsis hidden md:flex flex-1 justify-center items-center">
-              <!-- Heroicon name: ellipsis-vertical -->
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                <path fill-rule="evenodd" d="M4.5 12a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" clip-rule="evenodd" />
-              </svg>
-            </div>
+              <div class="grid-area-build flex justify-center items-center space-x-1">
+                <%= for item_key <- participant.items do %>
+                  <%= if src = Ddragon.get_item_image(participant.game.version, item_key) do %>
+                    <img src={src} class="w-8 h-8" />
+                  <% else %>
+                    <div class="bg-gray-900 w-8 h-8 border border-gray-400"></div>
+                  <% end %>
+                <% end %>
+              </div>
 
-          </div>
-        <% end %>
+              <div class="grid-area-ellipsis hidden md:flex flex-1 justify-center items-center">
+                <!-- Heroicon name: ellipsis-vertical -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                  <path fill-rule="evenodd" d="M4.5 12a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" clip-rule="evenodd" />
+                </svg>
+              </div>
+
+            </div>
+          <% end %>
+        </div>
     <% end %>
+    <div id="infinite-scroll" phx-hook="InfiniteScroll" data-page={@page.page_number} class="w-full max-w-3xl py-2 flex justify-center">
+      <img class={if not @load_more?, do: "invisible"} src="https://developer.riotgames.com/static/img/katarina.55a01cf0560a.gif" />
+    </div>
   </div>
 
 </div>

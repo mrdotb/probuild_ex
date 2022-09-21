@@ -50,7 +50,7 @@ defmodule ProbuildEx.MixProject do
       {:tesla, "~> 1.4"},
       {:hackney, "~> 1.13"},
       {:tailwind, "~> 0.1.6", runtime: Mix.env() == :dev},
-      {:scrivener_ecto, "~> 2.7"},
+      {:scrivener_ecto, "~> 2.7"}
     ]
   end
 

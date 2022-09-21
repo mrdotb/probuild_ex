@@ -47,18 +47,18 @@ defmodule ProbuildEx.AppTest do
       )
     end
 
-    test "list_pro_participant_summoner/1 should return participant matching the query" do
+    test "paginate_pro_participants/1 should return participant matching the query" do
       # This game off weiwei is on :kr and his position is :TOP and play yone
       create_weiwei_game()
 
-      [_] = App.list_pro_participant_summoner(%{search: "weiwei"})
-      [_] = App.list_pro_participant_summoner(%{search: "yone"})
-      [_] = App.list_pro_participant_summoner(%{platform_id: :kr})
-      [_] = App.list_pro_participant_summoner(%{team_position: :TOP})
+      %{total_entries: 1} = App.paginate_pro_participants(%{search: "weiwei"})
+      %{total_entries: 1} = App.paginate_pro_participants(%{search: "yone"})
+      %{total_entries: 1} = App.paginate_pro_participants(%{platform_id: :kr})
+      %{total_entries: 1} = App.paginate_pro_participants(%{team_position: :TOP})
 
-      [] = App.list_pro_participant_summoner(%{search: "faker"})
-      [] = App.list_pro_participant_summoner(%{platform_id: :euw1})
-      [] = App.list_pro_participant_summoner(%{team_position: :MIDDLE})
+      %{total_entries: 0} = App.paginate_pro_participants(%{search: "faker"})
+      %{total_entries: 0} = App.paginate_pro_participants(%{platform_id: :euw1})
+      %{total_entries: 0} = App.paginate_pro_participants(%{team_position: :MIDDLE})
     end
   end
 end
