@@ -2,6 +2,7 @@ defmodule ProbuildExWeb.GameLive.Index do
   use ProbuildExWeb, :live_view
 
   alias ProbuildEx.App
+  alias ProbuildEx.Ddragon
 
   @impl true
   def mount(_params, _session, socket) do

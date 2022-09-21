@@ -56,9 +56,9 @@
         </div>
 
         <div class="grid-area-versus flex justify-center items-center space-x-1">
-          <img class="w-8 h-8 rounded-full" src="https://ddragon.leagueoflegends.com/cdn/12.16.1/img/champion/Gragas.png" alt="">
+          <%= img_tag(Ddragon.get_champion_image(participant.game.version, participant.champion_id), class: "w-8 h-8 rounded-full") %>
           <span>vs</span>
-          <img class="w-8 h-8 rounded-full" src="https://ddragon.leagueoflegends.com/cdn/12.16.1/img/champion/Gragas.png" alt="">
+          <%= img_tag(Ddragon.get_champion_image(participant.game.version, participant.opponent_participant.champion_id), class: "w-8 h-8 rounded-full") %>
         </div>
 
         <div class="grid-area-kda flex justify-center items-center">
@@ -76,13 +76,18 @@
         </div>
 
         <div class="grid-area-summoners flex justify-center items-center space-x-1">
-          <img class="w-8 h-8 border-2 border-black" src="https://ddragon.leagueoflegends.com/cdn/12.16.1/img/spell/SummonerFlash.png" alt="">
-          <img class="w-8 h-8 border-2 border-black" src="https://ddragon.leagueoflegends.com/cdn/12.16.1/img/spell/SummonerDot.png" alt="">
+          <%= for summoner_key <- participant.summoners do %>
+            <%= img_tag(Ddragon.get_summoner_image(participant.game.version, summoner_key), class: "w-8 h-8 border border-gray-400") %>
+          <% end %>
         </div>
 
         <div class="grid-area-build flex justify-center items-center space-x-1">
-          <%= for _ <- 1..6 do %>
-            <img class="w-8 h-8" src="https://ddragon.leagueoflegends.com/cdn/12.16.1/img/item/1001.png" alt="">
+          <%= for item_key <- participant.items do %>
+            <%= if src = Ddragon.get_item_image(participant.game.version, item_key) do %>
+              <img src={src} class="w-8 h-8" />
+            <% else %>
+              <div class="bg-gray-900 w-8 h-8 border border-gray-400"></div>
+            <% end %>
           <% end %>
         </div>
 

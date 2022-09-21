@@ -17,7 +17,9 @@ defmodule ProbuildEx.Application do
       # Start the Endpoint (http/https)
       ProbuildExWeb.Endpoint,
       # Canon Supervisor
-      ProbuildEx.Canon.Supervisor
+      ProbuildEx.Canon.Supervisor,
+      # Ddragon
+      ProbuildEx.Ddragon.Cache
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
