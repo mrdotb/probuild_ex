@@ -1470,6 +1470,33 @@ defmodule ProbuildEx.GameDataFixtures do
     }
   ]
 
+  @weiwei_ugg %{
+    "current_ign" => "2639439711897152",
+    "current_team" => "Bilibili Gaming",
+    "league" => "LPL",
+    "main_role" => "jungle",
+    "normalized_name" => "weiwei",
+    "official_name" => "Weiwei",
+    "region_id" => "kr"
+  }
+
+  @weiwei_summoner_riot %{
+    "accountId" => "_-m7Gyn4QupEILCjIt7KAMXBv5AhpPOzkWf9LuIehDILnvGy01qYgAKc",
+    "id" => "NEXg9wj80c8ygbKTds2qVxdpMVIytZRpWuxLjPxJB3rJKx702B-BW0ZsMQ",
+    "name" => "2639439711897152",
+    "profileIconId" => 5212,
+    "puuid" => "Kr4y3g-A2i3ygwfAfPAVhrNdwxP8S8EvzM4-Uzcpzf-hOLlaLWnVsjRjX_vsxGDo53k22fczemzjdQ",
+    "revisionDate" => 1_642_137_289_000,
+    "summonerLevel" => 177
+  }
+
+  def get_weiwei do
+    %{
+      ugg: @weiwei_ugg,
+      summoner_riot: @weiwei_summoner_riot
+    }
+  end
+
   def get do
     %{
       platform_id: @platform_id,
