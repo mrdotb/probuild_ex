@@ -8,7 +8,7 @@ defmodule ProbuildEx.App do
   alias ProbuildEx.Repo
   alias ProbuildEx.Ddragon
 
-  alias ProbuildEx.Games.Participant
+  alias ProbuildEx.Games.{Game, Participant}
 
   defmodule Search do
     @moduledoc """
@@ -109,4 +109,31 @@ defmodule ProbuildEx.App do
 
   defp reduce_pro_participant_opts({key, value}, _query),
     do: raise("not supported option #{inspect(key)} with value #{inspect(value)}")
+
+  @doc """
+  Fetch game complete per game_id.
+  """
+  def fetch_game(game_id) do
+    query =
+      from game in Game,
+        left_join: participants in assoc(game, :participants),
+        left_join: summoners in assoc(participants, :summoner),
+        preload: [
+          participants: {participants, summoner: summoners}
+        ],
+        where: game.id == ^game_id,
+        order_by: [
+          asc: participants.team_id,
+          asc:
+            fragment(
+              "array_position(ARRAY['TOP', 'JUNGLE', 'MIDDLE', 'TOP', 'UTILITY'], ?)",
+              participants.team_position
+            )
+        ]
+
+    case Repo.one(query) do
+      nil -> {:error, :not_found}
+      game -> {:ok, game}
+    end
+  end
 end

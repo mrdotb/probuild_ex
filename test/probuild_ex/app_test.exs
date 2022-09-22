@@ -25,7 +25,7 @@ defmodule ProbuildEx.AppTest do
     end
   end
 
-  describe "list" do
+  describe "game" do
     defp create_weiwei_game do
       data = GameDataFixtures.get()
       weiwei_data = GameDataFixtures.get_weiwei()
@@ -59,6 +59,15 @@ defmodule ProbuildEx.AppTest do
       %{total_entries: 0} = App.paginate_pro_participants(%{search: "faker"})
       %{total_entries: 0} = App.paginate_pro_participants(%{platform_id: :euw1})
       %{total_entries: 0} = App.paginate_pro_participants(%{team_position: :MIDDLE})
+    end
+
+    test "fetch_game/1 should return a game" do
+      {:ok, multi} = create_weiwei_game()
+      assert {:ok, _game} = App.fetch_game(multi.game.id)
+    end
+
+    test "fetch_game/1 should return an error" do
+      assert {:error, :not_found} = App.fetch_game(1337)
     end
   end
 end
