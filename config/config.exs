@@ -14,7 +14,7 @@ config :probuild_ex,
 config :probuild_ex, ProbuildExWeb.Endpoint,
   url: [host: "localhost"],
   render_errors: [view: ProbuildExWeb.ErrorView, accepts: ~w(html json), layout: false],
-  pubsub_server: ProbuildEx.PubSub,
+  pubsub_server: :pbx_pubsub,
   live_view: [signing_salt: "0VmmhuEM"]
 
 # Configure esbuild (the version is required)

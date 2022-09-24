@@ -13,7 +13,7 @@ defmodule ProbuildEx.Application do
       # Start the Telemetry supervisor
       ProbuildExWeb.Telemetry,
       # Start the PubSub system
-      {Phoenix.PubSub, name: ProbuildEx.PubSub},
+      {Phoenix.PubSub, name: :pbx_pubsub},
       # Start the Endpoint (http/https)
       ProbuildExWeb.Endpoint,
       # Canon Supervisor

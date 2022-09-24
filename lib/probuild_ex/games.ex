@@ -7,6 +7,7 @@ defmodule ProbuildEx.Games do
 
   alias Ecto.Multi
   alias ProbuildEx.Repo
+  alias Phoenix.PubSub
 
   alias ProbuildEx.Games.{
     Game,
@@ -194,7 +195,9 @@ defmodule ProbuildEx.Games do
     multi = Enum.reduce(participants, multi, &reduce_create_participant/2)
     multi = Enum.reduce(participants, multi, &reduce_set_opponent_participant/2)
 
-    Repo.transaction(multi)
+    multi
+    |> Repo.transaction()
+    |> maybe_broadcast_game()
   end
 
   defp reduce_put_or_create_summoner(_platform_id, %Summoner{} = summoner, multi) do
@@ -287,6 +290,31 @@ defmodule ProbuildEx.Games do
       end
     )
   end
+
+  defp maybe_broadcast_game(multi_result)
+
+  defp maybe_broadcast_game({:ok, multi}) do
+    for {{:summoner, pro_puuid}, %{pro_id: pro_id}} when is_integer(pro_id) <- multi do
+      participant = Map.get(multi, {:update_participant, pro_puuid})
+      PubSub.broadcast(:pbx_pubsub, "pro_participant:new", {:participant_id, participant.id})
+    end
+
+    # Enum.reduce(multi, [], fn
+    #   {{:summoner, pro_puuid}, %{pro_id: pro_id}}, acc when is_integer(pro_id) ->
+    #     participant = Map.get(multi, {:update_participant, pro_puuid})
+    #     [participant.id | acc]
+
+    #   _, acc ->
+    #     acc
+    # end)
+    # |> Enum.each(fn participant_id ->
+    #   PubSub.broadcast(:pbx_pubsub, "pro_participant:new", {:participant_id, participant_id})
+    # end)
+
+    {:ok, multi}
+  end
+
+  defp maybe_broadcast_game(multi_result), do: multi_result
 
   @doc """
   Helpers to to convert match_data to game changeset.

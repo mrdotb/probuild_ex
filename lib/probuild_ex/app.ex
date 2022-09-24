@@ -61,6 +61,18 @@ defmodule ProbuildEx.App do
   end
 
   @doc """
+  Fetch pro participant based on search_opts.
+  """
+  def fetch_pro_participant(search_opts) do
+    query = Enum.reduce(search_opts, pro_participant_base_query(), &reduce_pro_participant_opts/2)
+
+    case Repo.one(query) do
+      nil -> {:error, :not_found}
+      participant -> {:ok, participant}
+    end
+  end
+
+  @doc """
   Query pro participant paginated based on search_opts.
   """
   def paginate_pro_participants(search_opts, page_number \\ 1) do
@@ -105,6 +117,11 @@ defmodule ProbuildEx.App do
 
     from [participant, pro: pro] in query,
       where: ilike(pro.name, ^search_str) or participant.champion_id in ^champions_ids
+  end
+
+  defp reduce_pro_participant_opts({:participant_id, participant_id}, query) do
+    from participant in query,
+      where: participant.id == ^participant_id
   end
 
   defp reduce_pro_participant_opts({key, value}, _query),
