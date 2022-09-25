@@ -62,4 +62,6 @@ if config_env() == :prod do
       port: port
     ],
     secret_key_base: secret_key_base
+
+  config :probuild_ex, ProbuildEx.RiotApi, token: System.get_env("RIOT_TOKEN")
 end
