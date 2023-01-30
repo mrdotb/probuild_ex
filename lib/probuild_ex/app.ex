@@ -118,10 +118,15 @@ defmodule ProbuildEx.App do
         end
       end)
 
-    search_str = search <> "%"
+    if length(champions_ids) > 0 do
+      from [participant] in query,
+        where: participant.champion_id in ^champions_ids
+    else
+      search_str = search <> "%"
 
-    from [participant, pro: pro] in query,
-      where: ilike(pro.name, ^search_str) or participant.champion_id in ^champions_ids
+      from [pro: pro] in query,
+        where: ilike(pro.name, ^search_str)
+    end
   end
 
   defp reduce_pro_participant_opts({:participant_id, participant_id}, query) do
