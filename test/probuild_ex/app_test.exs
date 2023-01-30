@@ -51,14 +51,14 @@ defmodule ProbuildEx.AppTest do
       # This game off weiwei is on :kr and his position is :TOP and play yone
       create_weiwei_game()
 
-      %{total_entries: 1} = App.paginate_pro_participants(%{search: "weiwei"})
-      %{total_entries: 1} = App.paginate_pro_participants(%{search: "yone"})
-      %{total_entries: 1} = App.paginate_pro_participants(%{platform_id: :kr})
-      %{total_entries: 1} = App.paginate_pro_participants(%{team_position: :TOP})
+      %{entries: [_]} = App.paginate_pro_participants(%{search: "weiwei"})
+      %{entries: [_]} = App.paginate_pro_participants(%{search: "yone"})
+      %{entries: [_]} = App.paginate_pro_participants(%{platform_id: :kr})
+      %{entries: [_]} = App.paginate_pro_participants(%{team_position: :TOP})
 
-      %{total_entries: 0} = App.paginate_pro_participants(%{search: "faker"})
-      %{total_entries: 0} = App.paginate_pro_participants(%{platform_id: :euw1})
-      %{total_entries: 0} = App.paginate_pro_participants(%{team_position: :MIDDLE})
+      %{entries: []} = App.paginate_pro_participants(%{search: "faker"})
+      %{entries: []} = App.paginate_pro_participants(%{platform_id: :euw1})
+      %{entries: []} = App.paginate_pro_participants(%{team_position: :MIDDLE})
     end
 
     test "fetch_game/1 should return a game" do

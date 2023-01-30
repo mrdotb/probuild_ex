@@ -3,5 +3,7 @@ defmodule ProbuildEx.Repo do
     otp_app: :probuild_ex,
     adapter: Ecto.Adapters.Postgres
 
-  use Scrivener, page_size: 20
+  use Paginator,
+    limit: 20,
+    include_total_count: false
 end
