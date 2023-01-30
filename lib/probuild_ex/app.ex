@@ -46,10 +46,10 @@ defmodule ProbuildEx.App do
 
   defp pro_participant_base_query do
     from participant in Participant,
-      left_join: game in assoc(participant, :game),
+      inner_join: game in assoc(participant, :game),
       as: :game,
-      left_join: summoner in assoc(participant, :summoner),
-      left_join: opponent_participant in assoc(participant, :opponent_participant),
+      inner_join: summoner in assoc(participant, :summoner),
+      inner_join: opponent_participant in assoc(participant, :opponent_participant),
       inner_join: pro in assoc(summoner, :pro),
       as: :pro,
       preload: [
@@ -75,10 +75,15 @@ defmodule ProbuildEx.App do
   @doc """
   Query pro participant paginated based on search_opts.
   """
-  def paginate_pro_participants(search_opts, page_number \\ 1) do
+  def paginate_pro_participants(search_opts, after_cursor \\ nil) do
     query = Enum.reduce(search_opts, pro_participant_base_query(), &reduce_pro_participant_opts/2)
 
-    Repo.paginate(query, page: page_number)
+    opts = [
+      cursor_fields: [{{:game, :creation}, :desc}],
+      after: after_cursor
+    ]
+
+    Repo.paginate(query, opts)
   end
 
   defp reduce_pro_participant_opts({:platform_id, nil}, query) do

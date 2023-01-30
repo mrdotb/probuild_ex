@@ -43,31 +43,32 @@ Hooks.TimeAgo = {
 // https://elixirforum.com/t/how-can-i-implement-an-infinite-scroll-in-liveview/30457
 // https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver
 Hooks.InfiniteScroll = {
-  page() {
-    return parseInt(this.el.dataset.page, 10);
+  cursor() {
+    return this.el.dataset.cursor;
   },
-  loadMore(entries) {
+  maybeLoadMore(entries) {
     const target = entries[0];
-    if (this.pending && target.isIntersecting && this.pending == this.page()) {
-      this.pending = this.page() + 1;
+    if (target.isIntersecting && this.cursor() && !this.loadMore) {
+      this.loadMore = true;
       this.pushEvent("load-more", {});
     }
   },
   mounted() {
-    this.pending = this.page();
+    this.loadMore = false;
+    this.handleEvent("load-more", () => {
+      this.loadMore = false;
+    })
+
     const options = {
       root: null,
       rootMargin: "-90% 0px 10% 0px",
       threshold: 1.0
     };
-    this.observer = new IntersectionObserver(this.loadMore.bind(this), options)
+    this.observer = new IntersectionObserver(this.maybeLoadMore.bind(this), options);
     this.observer.observe(this.el);
   },
   reconnected() {
-    this.pending = this.page()
-  },
-  updated() {
-    this.pending = this.page();
+    this.loadMore = false;
   },
   beforeDestroy() {
     this.observer.unobserve(this.el);

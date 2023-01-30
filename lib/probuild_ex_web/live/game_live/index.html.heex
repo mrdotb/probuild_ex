@@ -72,7 +72,7 @@
           <% end %>
         </div>
     <% end %>
-    <div id="infinite-scroll" phx-hook="InfiniteScroll" data-page={@page.page_number} class="w-full max-w-3xl py-2 flex justify-center">
+    <div id="infinite-scroll" phx-hook="InfiniteScroll" data-cursor={@page.metadata.after} class="w-full max-w-3xl py-2 flex justify-center">
       <.spinner load?={@load_more?} />
     </div>
   </div>

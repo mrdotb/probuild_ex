@@ -12,7 +12,7 @@ defmodule ProbuildExWeb.GameLive.Index do
     update: "append",
     changeset: App.Search.changeset(),
     search: %App.Search{},
-    page: %Scrivener.Page{},
+    page: %Paginator.Page{metadata: %Paginator.Page.Metadata{}},
     loading?: true,
     load_more?: false,
     subscribed?: false
@@ -103,12 +103,13 @@ defmodule ProbuildExWeb.GameLive.Index do
 
   def handle_event("load-more", _params, socket) do
     page = socket.assigns.page
+    load_more? = socket.assigns.load_more?
 
     socket =
-      if page.page_number < page.total_pages do
+      if not load_more? and not is_nil(page.metadata.after) do
         opts = App.Search.to_map(socket.assigns.search)
         # Don't block the load-more event, execute the slow request in handle_info
-        send(self(), {:query_pro_participants, opts, page.page_number + 1})
+        send(self(), {:query_pro_participants, opts, page.metadata.after})
         assign(socket, load_more?: true)
       else
         socket
@@ -146,17 +147,18 @@ defmodule ProbuildExWeb.GameLive.Index do
     {:noreply, socket}
   end
 
-  def handle_info({:query_pro_participants, opts, page_number}, socket) do
-    page = App.paginate_pro_participants(opts, page_number)
+  def handle_info({:query_pro_participants, opts, after_cursor}, socket) do
+    page = App.paginate_pro_participants(opts, after_cursor)
 
     socket =
-      assign(
-        socket,
+      socket
+      |> assign(
         update: "append",
         page: page,
         participants: page.entries,
         load_more?: false
       )
+      |> push_event("load-more", %{})
 
     {:noreply, socket}
   end
