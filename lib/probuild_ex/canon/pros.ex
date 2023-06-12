@@ -19,7 +19,7 @@ defmodule ProbuildEx.Canon.Pros do
   def run(platform_id \\ "euw1") do
     UGG.pro_list()
     |> Stream.filter(fn ugg_pro ->
-      Map.get(ugg_pro, "region_id") == platform_id
+      Map.get(ugg_pro, "region_id") == platform_id and not is_nil(ugg_pro["current_ign"])
     end)
     |> Stream.map(fn ugg_pro ->
       name = Map.get(ugg_pro, "current_ign")
